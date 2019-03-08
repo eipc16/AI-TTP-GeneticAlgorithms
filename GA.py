@@ -38,7 +38,6 @@ class GA:
         if self._dims is not None:
             for i in range(self._pop_size):
                 individual = Individual(self._dims)
-                individual.pick_best_items(self._city_array, self._max_capacity)
                 self._population.append(individual)
         else:
             print("Nie podano ilości miast")
@@ -61,7 +60,7 @@ class GA:
             for item in items:
                 if item.is_from_city(self._city_array[route[i]]):
                     curr_weight += item.get_weight()
-        
+    
             total_time += self.calc_time_btn_cities(route[i], route[i + 1], curr_weight) if i < len(route) - 1 else 0
         
         total_time += self.calc_time_btn_cities(route[len(route) - 1], route[0], curr_weight)
@@ -69,4 +68,9 @@ class GA:
         return total_time
 
     def calc_fitness(self, individual):
+        individual.pick_best_items(self._city_array, self._max_capacity)
         return individual.get_total_profit() - self.calc_total_time(individual.get_route(), individual.get_items())
+
+    def selection(self, tour_size):
+        self._population.sort(key=lambda x: self.calc_fitness(x), reverse=True)
+        return self._population[:tour_size]

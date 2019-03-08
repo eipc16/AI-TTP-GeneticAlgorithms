@@ -39,5 +39,8 @@ class Individual:
                 self._picked_items.append(best_item)
                 curr_weight += best_item.get_weight()
 
+    def mutate(self):
+        pass
+
     def __repr__(self):
         return str(self._route)
