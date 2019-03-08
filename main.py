@@ -3,6 +3,7 @@ import re
 
 from City import City
 from Item import Item
+from GA import GA
 
 def format_string(string):
     r_chars = ["\t", "\n", ":"]
@@ -39,13 +40,17 @@ def load_data(filename):
         data = f.readlines()
 
         meta_data = get_meta_data(data[2:10])
-        dims, num_items, _, _, _ = meta_data
+        dims, num_items, capacity, min_speed, max_speed = meta_data
 
         city_array = load_cities(data[10:dims+10])
         assign_items_to_city(city_array, data[dims+11: dims+num_items+11])
 
-    return meta_data, city_array
+    return dims, capacity, min_speed, max_speed, city_array
 
-info, cities = load_data("data/easy_0.ttp")
+dims, capacity, min_speed, max_speed, cities = load_data("data/easy_0.ttp")
 
-print(cities[2])
+ga = GA(0, 0, 0, 0, 0)
+ga.set_data(dims, capacity, min_speed, max_speed, cities)
+ga.init_population()
+
+print(ga.calc_total_time([0, 4, 2, 5]))

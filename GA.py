@@ -17,22 +17,20 @@ class GA:
         self._max_speed = None
 
         self._city_array = None
-        self._item_array = None
         self._dist_matrix = None
 
-    def calc_dist_matrix(self, city_array):
+    def calc_dist_matrix(self):
         self._dist_matrix = np.zeros([self._dims, self._dims])
         
         for i in range(self._dist_matrix.shape[0]):
             for j in range(self._dist_matrix.shape[1]):
                 self._dist_matrix[i, j] = self._city_array[i].distance_to(self._city_array[j])
 
-    def set_data(self, dims, max_capacity, min_speed, max_speed, city_array, item_array):
+    def set_data(self, dims, max_capacity, min_speed, max_speed, city_array):
         self._dims = dims
         self._max_capacity = max_capacity
         self._min_speed, self._max_speed = min_speed, max_speed
         self._city_array = city_array
-        self._item_array = item_array
 
         self.calc_dist_matrix()
 
@@ -57,9 +55,11 @@ class GA:
 
         for i in range(len(route)):
             curr_city = self._city_array[route[i]]
+            print('Current ciry: ' + str(curr_city))
             picked_item = curr_city.get_best_item()
 
             if picked_item is not None and (curr_weight + picked_item.get_weight() < self._max_capacity):
+                print('Picked item: ' + str(picked_item))
                 curr_profit, curr_weight = picked_item.get_profit(), picked_item.get_weight()
 
             total_time += self.calc_time_btn_cities(route[i], route[i + 1], curr_weight) if i < len(route) - 2 else 0
