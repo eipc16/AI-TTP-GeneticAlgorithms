@@ -56,13 +56,13 @@ class GA:
 
         for i in range(len(route)):
             curr_city = self._city_array[route[i]]
-            
-            for item in items:
-                if item.is_from_city(self._city_array[route[i]]):
-                    curr_weight += item.get_weight()
-    
+            curr_item = items[i]
+
+            if curr_item is not None:
+                curr_weight += curr_item.get_weight()
+
             total_time += self.calc_time_btn_cities(route[i], route[i + 1], curr_weight) if i < len(route) - 1 else 0
-        
+
         total_time += self.calc_time_btn_cities(route[len(route) - 1], route[0], curr_weight)
 
         return total_time

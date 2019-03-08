@@ -2,10 +2,8 @@ import random as r
 
 class Individual:
     def __init__(self, num_of_cities):
-        #self._route = r.sample(range(num_of_cities), num_of_cities)
-        self._route = [0, 4, 2, 5]
-        self._items = []
-
+        self._route = r.sample(range(num_of_cities), num_of_cities)
+        #self._route = [0, 4, 2, 5]
         self._picked_items = []
         self._fitness = 0
 
@@ -22,11 +20,10 @@ class Individual:
         return self._picked_items
 
     def get_total_weight(self):
-        return sum(map(lambda x: x.get_weight(), self._picked_items))
+        return sum(map(lambda x: x.get_weight() if x is not None else 0, self._picked_items))
 
     def get_total_profit(self):
-        print(str(self._picked_items))
-        return sum(map(lambda x: x.get_profit(), self._picked_items))
+        return sum(map(lambda x: x.get_profit() if x is not None else 0, self._picked_items))
 
     def pick_best_items(self, city_array, max_capacity):
         for city_index in self._route:
@@ -38,6 +35,8 @@ class Individual:
             if best_item is not None and (curr_weight + best_item.get_weight() < max_capacity):
                 self._picked_items.append(best_item)
                 curr_weight += best_item.get_weight()
+            else:
+                self._picked_items.append(None)
 
     def mutate(self):
         pass
