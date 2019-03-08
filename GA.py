@@ -1,4 +1,4 @@
-from Route import Route
+from Individual import Individual
 import numpy as np
 
 class GA:
@@ -37,7 +37,9 @@ class GA:
     def init_population(self):
         if self._dims is not None:
             for i in range(self._pop_size):
-                self._population.append(Route(self._dims))
+                individual = Individual(self._dims)
+                individual.pick_best_items(self._city_array, self._max_capacity)
+                self._population.append(individual)
         else:
             print("Nie podano ilości miast")
 
@@ -47,7 +49,7 @@ class GA:
     def calc_time_btn_cities(self, start, stop, curr_weight):
         return self._dist_matrix[start, stop] / self.get_curr_speed(curr_weight)
 
-    def calc_total_time(self, route):
+    def calc_total_time(self, route, items):
         curr_weight, curr_profit = 0, 0
         total_time = 0
 
@@ -55,18 +57,16 @@ class GA:
 
         for i in range(len(route)):
             curr_city = self._city_array[route[i]]
-            print('Current ciry: ' + str(curr_city))
-            picked_item = curr_city.get_best_item()
-
-            if picked_item is not None and (curr_weight + picked_item.get_weight() < self._max_capacity):
-                print('Picked item: ' + str(picked_item))
-                curr_profit, curr_weight = picked_item.get_profit(), picked_item.get_weight()
-
-            total_time += self.calc_time_btn_cities(route[i], route[i + 1], curr_weight) if i < len(route) - 2 else 0
+            
+            for item in items:
+                if item.is_from_city(self._city_array[route[i]]):
+                    curr_weight += item.get_weight()
+        
+            total_time += self.calc_time_btn_cities(route[i], route[i + 1], curr_weight) if i < len(route) - 1 else 0
         
         total_time += self.calc_time_btn_cities(route[len(route) - 1], route[0], curr_weight)
 
         return total_time
 
-    def calculate_fitness(self):
-        pass
+    def calc_fitness(self, individual):
+        return individual.get_total_profit() - self.calc_total_time(individual.get_route(), individual.get_items())

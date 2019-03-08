@@ -49,8 +49,8 @@ def load_data(filename):
 
 dims, capacity, min_speed, max_speed, cities = load_data("data/easy_0.ttp")
 
-ga = GA(0, 0, 0, 0, 0)
+ga = GA(2, 0, 0, 0, 0)
 ga.set_data(dims, capacity, min_speed, max_speed, cities)
 ga.init_population()
 
-print(ga.calc_total_time([0, 4, 2, 5]))
+print(ga.calc_fitness(ga._population[1]))
