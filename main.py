@@ -54,3 +54,4 @@ ga.set_data(dims, capacity, min_speed, max_speed, cities)
 ga.init_population()
 
 print(ga.calc_fitness(ga._population[1]))
+
