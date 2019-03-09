@@ -45,3 +45,9 @@ class GA:
     def selection(self, tour_size):
         self._population.sort(key=lambda x: self.calc_fitness(x), reverse=True)
         return self._population[:tour_size]
+
+    def mutate(self):
+        pass
+
+    def crossover(self):
+        pass

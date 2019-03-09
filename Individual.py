@@ -69,5 +69,8 @@ class Individual:
         [first, second] = r.sample(range(len(self._route)), 2)
         self._route[first], self._route[second] = self._route[second], self._route[first]
 
+    def crossover(self, other):
+        pass
+
     def __repr__(self):
         return str(self._route)
