@@ -1,56 +1,34 @@
 import numpy as np
 import re
+import csv
 
-from City import City
-from Item import Item
-from GA import GA
+from GeneticAlgorithm import GeneticAlgorithm
+from Loader import load_data
+from TTP import TTP
 
-def format_string(string):
-    r_chars = ["\t", "\n", ":"]
-    f_string = string
-    for char in r_chars:
-        f_string = f_string.replace(char, "")
+POP_SIZE = 100
+GEN = 100
+PX = 0.7
+PM = 0.01
+TOUR = 5
+TEST_NAME = 'trivial_0'
 
-    return ''.join(filter(lambda x: x.isdigit() or x == ".", f_string))
+dims, capacity, min_speed, max_speed, cities = load_data("data/" + TEST_NAME + ".ttp")
 
-def get_meta_data(data):
-    dimension, number_of_items = int(format_string(data[0])), int(format_string(data[1]))
-    knapsack_capacity = int(format_string(data[2]))
-    min_speed, max_speed = float(format_string(data[3])), float(format_string(data[4]))
-    rent_ratio = float(format_string(data[5]))
+ttp = TTP(dims, capacity, min_speed, max_speed, cities)
+ga = GeneticAlgorithm(POP_SIZE, GEN, PX, PM, TOUR, ttp, TEST_NAME, visualize=True)
+best = ga.run()
+ga.visualize()
 
-    return dimension, number_of_items, knapsack_capacity, min_speed, max_speed
+import matplotlib.pyplot as plt
 
-def load_cities(city_data):
-    city_array = []
+plt.plot([c.get_x_pos() for c in best.route], [c.get_y_pos() for c in best.route], '-o')
+plt.plot(best.route[0].get_x_pos(), best.route[0].get_y_pos(), '-ro')
+plt.plot(best.route[-1].get_x_pos(), best.route[-1].get_y_pos(), '-ro')
+plt.show()
 
-    for i in range(len(city_data)):
-        index, x_pos, y_pos = re.findall(r"[-+]?\d*\.\d+|\d+", city_data[i])
-        city_array.append(City(int(index), float(x_pos), float(y_pos)))
-
-    return city_array
-
-def assign_items_to_city(city_array, item_data):
-    for i in range(len(item_data)):
-        index, profit, weight, city_id = re.findall("\d+", item_data[i])
-        city_array[int(city_id) - 1].add_item(Item(int(index), int(profit), int(weight), int(city_id)))
-    
-def load_data(filename):
-    with open(filename, "r") as f:
-        data = f.readlines()
-
-        meta_data = get_meta_data(data[2:10])
-        dims, num_items, capacity, min_speed, max_speed = meta_data
-
-        city_array = load_cities(data[10:dims+10])
-        assign_items_to_city(city_array, data[dims+11: dims+num_items+11])
-
-    return dims, capacity, min_speed, max_speed, city_array
-
-dims, capacity, min_speed, max_speed, cities = load_data("data/easy_0.ttp")
-
-ga = GA(100, 0, 0, 0, 0)
-ga.set_data(dims, capacity, min_speed, max_speed, cities)
-ga.init_population()
-
-print(ga.calc_fitness(ga._population[1]))
+print(best.route)
+print(best.picked_items)
+print("WEIGHT: %d | MAX_WEIGHT: %d" % (best.get_total_weight(), capacity))
+print("PROFIT: %d" % (best.get_total_profit()))
+print("FITNESS: %f" % (best.fitness))
