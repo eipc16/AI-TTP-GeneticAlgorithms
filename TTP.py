@@ -13,8 +13,16 @@ class TTP:
 
     def get_random_individual(self):
         random_indexes = r.sample(range(self.dims), self.dims)
-        random_route = list(map(lambda i: self.city_array[i], random_indexes))
-        return Individual(random_route)
+        return Individual(self.get_city_array(random_indexes))
+
+    def get_random_individuals(self, number):
+        individuals = []
+        for i in range(number):
+            individuals.append(self.get_random_individual())
+        return individuals
+
+    def get_city_array(self, indexes):
+        return list(map(lambda i: self.city_array[i], indexes))
 
     def calc_dist_matrix(self, city_array):
         dist_matrix = np.zeros([self.dims, self.dims])
@@ -37,21 +45,21 @@ class TTP:
         total_time = 0
 
         curr_city = None
-
+    
         for i in range(len(route)):
             curr_city = self.city_array[i]
-            curr_item = items[i]
+            curr_item = curr_city.get_best_item(self.max_capacity - curr_weight)
 
             if curr_item is not None:
                 curr_weight += curr_item.get_weight()
 
             total_time += self.calc_time_btn_cities(route[i].index, route[i + 1].index, curr_weight) if i < len(route) - 1 else 0
 
-        total_time += self.calc_time_btn_cities(route[len(route) - 1].index, route[0].index, curr_weight)
+        total_time += self.calc_time_btn_cities(route[-1].index, route[0].index, curr_weight)
 
         return total_time
 
     def calc_fitness(self, individual):
-        individual.pick_best_items(self.city_array, self.max_capacity)
+        individual.pick_best_items(self.max_capacity)
         return np.round(individual.get_total_profit() - self.calc_total_time(individual.route, individual.picked_items), decimals=2)
 

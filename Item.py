@@ -12,7 +12,7 @@ class Item:
         return self._city_id == city_id
 
     def calc_value(self):
-        return self._profit / self._weight
+        return self._profit
 
     def get_weight(self):
         return self._weight

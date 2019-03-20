@@ -23,11 +23,14 @@ class City:
         self._items.append(item)
         self._items.sort(key=lambda i: i.calc_value(), reverse=True)
 
-    def get_best_item(self):
-        return self._items[0] if len(self._items) > 0 else None
+    # def get_best_item(self):
+    #     return self._items[0] if len(self._items) > 0 else None
 
     def get_best_item(self, weight_limit):
-        return next((x for x in self._items if x._weight <= weight_limit), None)
+        return next((x for x in self._items if x._weight < weight_limit), None)
 
     def __repr__(self):
         return str(self.get_city_number())
+
+    def __eq__(self, other):
+        return self.index == other.index

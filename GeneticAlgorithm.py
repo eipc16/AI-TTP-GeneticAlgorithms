@@ -3,9 +3,10 @@ import random as r
 import numpy as np
 import csv
 import matplotlib.pyplot as plt
+import copy
 
 class GeneticAlgorithm:
-    def __init__(self, pop_size, gen_limit, px, pm, tour_size, ttp, test_name, log_interval=1, visualize=False):
+    def __init__(self, pop_size, gen_limit, px, pm, tour_size, ttp, test_name, visualize=False):
         self.pop_size = pop_size
         self.gen_limit = gen_limit
         self.px = px
@@ -13,9 +14,9 @@ class GeneticAlgorithm:
         self.tour_size = tour_size
         self.ttp = ttp
         self.test_name = test_name
-        self.log_interval = log_interval
 
         self.population = []
+        self.old_population = []
         
         if visualize:
             self.bests = []
@@ -50,13 +51,13 @@ class GeneticAlgorithm:
             while gen <= self.gen_limit:
                 self.selection_tournament()
                 self.crossover()
+                self.fix_population()
                 self.mutation()
 
                 best, avg, worst = self.evaluate()
                 print("GEN: %d, BEST: %f\tAVG: %f\tWORST: %f\tPOPULATION: %d" % (gen, best, avg, worst, len(self.population)))
-                if gen % self.log_interval == 0:
-                    writer.writerow([str(gen), str(best), str(avg), str(worst)])
-                
+                writer.writerow([str(gen), str(best), str(avg), str(worst)])
+
                 if self.visualize:
                     self.bests.append(best)
                     self.worsts.append(worst)
@@ -89,11 +90,22 @@ class GeneticAlgorithm:
         r.shuffle(self.population)
         winners = []
         tour_pop = []
-        while len(winners) < len(self.population):
+        while len(winners) < int(0.5 * len(self.population)):
             tour_pop = r.sample(self.population, self.tour_size)
-            winners.append(self.select_best(tour_pop))
+            best = Individual(self.select_best(tour_pop).route)
+            winners.append(best)
             tour_pop.clear()
+
+        self.old_population.clear()
+        self.old_population = [i for i in self.population]
         self.population = winners
+
+    def fix_population(self):
+        sorted(self.old_population, key=lambda p: p.fitness, reverse=True)
+        while len(self.population) < self.pop_size:
+           self.population.append(self.old_population.pop())
+        # for individual in self.ttp.get_random_individuals(self.pop_size - len(self.population)):
+        #     self.population.append(individual)
 
     def selection_elite(self, percentage):
         sorted_pop = sorted(self.population, key=lambda i: i.fitness, reverse=True)
@@ -116,11 +128,15 @@ class GeneticAlgorithm:
 
     def crossover(self):
         r.shuffle(self.population)
-        for i in range(0, len(self.population), 2):
+        parent_pop_size = len(self.population)
+        for i in range(parent_pop_size):
             if r.random() < self.px:
-                parent_1, parent_2 = self.population[i], self.population[i + 1]
-                route_child_1, route_child_2 = self.crossing_ox(parent_1.route, parent_2.route)
-                self.population[i], self.population[i + 1] = Individual(route_child_1), Individual(route_child_2)
+                parent_1, parent_2 = self.population[i], self.population[np.random.randint(parent_pop_size)]
+                route_child_1, route_child_2 = self.crossing_ox([c.index for c in parent_1.route], [c.index for c in parent_2.route])
+                self.population.append(Individual(self.ttp.get_city_array(route_child_1)))
+                self.population.append(Individual(self.ttp.get_city_array(route_child_2)))
+                #self.population[i], self.population[i + 1] = Individual(route_child_1), Individual(route_child_2)
+        self.population = self.population[parent_pop_size:]
 
     @staticmethod
     def select_best(group):
@@ -141,10 +157,10 @@ class GeneticAlgorithm:
     def crossing_ox(route_parent_1, route_parent_2):
         def fix(child, parent):
             rest = [i for i in parent if i not in child]
-            return list(map(lambda i: i if i != 0 else rest.pop(0), child))
+            return list(map(lambda i: i if i != -1 else rest.pop(0), child))
 
         index_1, index_2 = r.sample(range(len(route_parent_1)), 2)
         min_, max_ = min(index_1, index_2), max(index_1, index_2)
-        route_child_1, route_child_2 = [0] * len(route_parent_1), [0] * len(route_parent_1)
+        route_child_1, route_child_2 = [-1] * len(route_parent_1), [-1] * len(route_parent_1)
         route_child_1[min_:max_], route_child_2[min_:max_] = route_parent_1[min_:max_], route_parent_2[min_:max_]
         return fix(route_child_1, route_parent_2), fix(route_child_2, route_parent_1)

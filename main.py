@@ -10,8 +10,8 @@ POP_SIZE = 100
 GEN = 100
 PX = 0.7
 PM = 0.01
-TOUR = 5
-TEST_NAME = 'trivial_0'
+TOUR = 10
+TEST_NAME = 'hard_4'
 
 dims, capacity, min_speed, max_speed, cities = load_data("data/" + TEST_NAME + ".ttp")
 
@@ -23,8 +23,9 @@ ga.visualize()
 import matplotlib.pyplot as plt
 
 plt.plot([c.get_x_pos() for c in best.route], [c.get_y_pos() for c in best.route], '-o')
-plt.plot(best.route[0].get_x_pos(), best.route[0].get_y_pos(), '-ro')
-plt.plot(best.route[-1].get_x_pos(), best.route[-1].get_y_pos(), '-ro')
+plt.plot(best.route[0].get_x_pos(), best.route[0].get_y_pos(), '-go', label='START')
+plt.plot(best.route[-1].get_x_pos(), best.route[-1].get_y_pos(), '-ro', label='STOP')
+plt.legend(loc='upper right')
 plt.show()
 
 print(best.route)
