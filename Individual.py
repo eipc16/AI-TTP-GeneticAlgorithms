@@ -1,6 +1,7 @@
 import random as r
 import copy
 
+
 class Individual:
     def __init__(self, route):
         self.route = route

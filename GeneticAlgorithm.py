@@ -5,8 +5,10 @@ import csv
 import matplotlib.pyplot as plt
 import copy
 
+
 class GeneticAlgorithm:
-    def __init__(self, pop_size, gen_limit, px, pm, tour_size, ttp, test_name, visualize=False):
+    def __init__(self, pop_size, gen_limit, px, pm, tour_size, ttp, test_name, elitism=0.0, selection_type='tournament',
+                 mutation_type='swap'):
         self.pop_size = pop_size
         self.gen_limit = gen_limit
         self.px = px
@@ -17,55 +19,41 @@ class GeneticAlgorithm:
 
         self.population = []
         self.old_population = []
-        
-        if visualize:
-            self.bests = []
-            self.avgs = []
-            self.worsts = []
+
+        self.bests = []
+        self.avgs = []
+        self.worsts = []
+
+        self.elitism = elitism
+        self.mutation_type = mutation_type
+        self.selection_type = selection_type
 
     def init_population(self):
         self.population.clear()
         for i in range(self.pop_size):
             self.population.append(self.ttp.get_random_individual())
 
-    def visualize(self):
-        if self.visualize:
-            gens = [i for i in range(self.gen_limit + 1)]
-            plt.plot(gens, self.bests, label="BEST")
-            plt.plot(gens, self.avgs, label="AVERAGE")
-            plt.plot(gens, self.worsts, label="WORST")
-            plt.show()
-        else:
-            print("You have to initiate GeneticAlgorithm class with visualize=True parameter")
-
     def run(self):
         self.bests, self.avgs, self.worsts = [], [], []
-        with open('results/' + self.test_name + '.csv', 'w') as file:
-            writer = csv.writer(file)
-            writer.writerow(['GENERATION', 'BEST', 'AVG', 'WORST'])
+        gen = 0
+        self.init_population()
+        self.evaluate()
 
-            gen = 0
-            self.init_population()
-            self.evaluate()
+        while gen <= self.gen_limit:
+            self.selection()
+            self.crossover()
+            self.mutation()
 
-            while gen <= self.gen_limit:
-                self.selection_tournament()
-                self.crossover()
-                self.fix_population()
-                self.mutation()
+            best, avg, worst = self.evaluate()
+            # print("GEN: %d, BEST: %f\tAVG: %f\tWORST: %f\tPOPULATION: %d" % (gen, best, avg, worst, len(self.population)))
 
-                best, avg, worst = self.evaluate()
-                print("GEN: %d, BEST: %f\tAVG: %f\tWORST: %f\tPOPULATION: %d" % (gen, best, avg, worst, len(self.population)))
-                writer.writerow([str(gen), str(best), str(avg), str(worst)])
+            self.bests.append(best)
+            self.worsts.append(worst)
+            self.avgs.append(avg)
 
-                if self.visualize:
-                    self.bests.append(best)
-                    self.worsts.append(worst)
-                    self.avgs.append(avg)
+            gen = gen + 1
 
-                gen = gen + 1
-
-        return self.select_best(self.population)
+        return self.bests, self.avgs, self.worsts
 
     def evaluate(self):
         best, avg, worst = -np.inf, 0.0, np.inf
@@ -81,66 +69,76 @@ class GeneticAlgorithm:
             avg += self.population[i].fitness
 
         return best, np.round(avg / self.pop_size, decimals=2), worst
-                
+
+    def select_elite(self, percent):
+        sorted_pop = sorted(self.population, key=lambda k: k.fitness, reverse=True)
+        threshold = int(self.pop_size * percent)
+        return sorted_pop[:threshold]
+
+    def selection(self):
+        if self.selection_type == 'tournament':
+            self.selection_tournament()
+        elif self.selection_type == 'roulette':
+            self.selection_roulette()
 
     def selection_tournament(self):
         if self.tour_size == 0:
             return
-
         r.shuffle(self.population)
-        winners = []
-        tour_pop = []
-        while len(winners) < int(0.5 * len(self.population)):
+        selected = []
+        while len(selected) < len(self.population):
             tour_pop = r.sample(self.population, self.tour_size)
-            best = Individual(self.select_best(tour_pop).route)
-            winners.append(best)
+            best = self.select_best(tour_pop)
+            selected.append(best)
             tour_pop.clear()
 
-        self.old_population.clear()
-        self.old_population = [i for i in self.population]
-        self.population = winners
+        self.population = selected
 
-    def fix_population(self):
-        sorted(self.old_population, key=lambda p: p.fitness, reverse=True)
-        while len(self.population) < self.pop_size:
-           self.population.append(self.old_population.pop())
-        # for individual in self.ttp.get_random_individuals(self.pop_size - len(self.population)):
-        #     self.population.append(individual)
+    def selection_roulette(self):
+        selected = []
+        for i in range(self.pop_size):
+            r.shuffle(self.population)
+            selected.append(self.selection_roulette_pick())
+        self.population = selected
 
-    def selection_elite(self, percentage):
-        sorted_pop = sorted(self.population, key=lambda i: i.fitness, reverse=True)
-        elite_threshold = int(self.pop_size * percentage)
-        winners = sorted_pop[:elite_threshold]
-        self.population = winners
+    def selection_roulette_pick(self):
+        worst = self.select_worst(self.population)
+        fitness_sum = sum((individual.fitness - worst.fitness * 0.95) for individual in self.population)
+        pick = r.uniform(0, fitness_sum)
+        current = 0
+        for individual in self.population:
+            current += (individual.fitness - worst.fitness * 0.95)
+            if current > pick:
+                return individual
+
+    def crossover(self):
+        r.shuffle(self.population)
+        parent_pop_size = len(self.population)
+        for i in range(0, parent_pop_size, 2):
+            if r.random() < self.px and i + 1 < parent_pop_size:
+                parent_1, parent_2 = self.population[i], self.population[i + 1]
+                route_child_1, route_child_2 = self.crossing_ox([c.index for c in parent_1.route],
+                                                                [c.index for c in parent_2.route])
+                child_1, child_2 = Individual(self.ttp.get_city_array(route_child_1)), Individual(
+                    self.ttp.get_city_array(route_child_2))
+                self.population[i], self.population[i + 1] = child_1, child_2
 
     def mutation(self):
         for individual in self.population:
             mutations_per_individual = sum(np.random.rand(self.ttp.dims) < self.pm)
             for i in range(mutations_per_individual):
-                self.mutation_swap(individual.route)
+                if self.mutation_type == 'swap':
+                    self.mutation_swap(individual.route)
+                elif self.mutation_type == 'inverse':
+                    self.mutation_inverse(individual.route)
                 individual.fitness = None
-
-    def mutation_2(self):
-        for individual in self.population:
-            if r.random() < self.pm:
-                self.mutation_swap(individual.route)
-                individual.fitness = None
-
-    def crossover(self):
-        r.shuffle(self.population)
-        parent_pop_size = len(self.population)
-        for i in range(parent_pop_size):
-            if r.random() < self.px:
-                parent_1, parent_2 = self.population[i], self.population[np.random.randint(parent_pop_size)]
-                route_child_1, route_child_2 = self.crossing_ox([c.index for c in parent_1.route], [c.index for c in parent_2.route])
-                self.population.append(Individual(self.ttp.get_city_array(route_child_1)))
-                self.population.append(Individual(self.ttp.get_city_array(route_child_2)))
-                #self.population[i], self.population[i + 1] = Individual(route_child_1), Individual(route_child_2)
-        self.population = self.population[parent_pop_size:]
 
     @staticmethod
     def select_best(group):
         return max(group, key=lambda p: p.fitness)
+
+    def select_worst(self, group):
+        return min(group, key=lambda p: p.fitness)
 
     @staticmethod
     def mutation_swap(route):

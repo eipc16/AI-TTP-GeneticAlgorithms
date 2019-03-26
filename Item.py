@@ -1,6 +1,6 @@
 class Item:
     def __init__(self, index, profit, weight, city_id):
-        self._index =  index
+        self._index = index
         self._profit = profit
         self._weight = weight
         self._city_id = city_id
@@ -21,4 +21,4 @@ class Item:
         return self._profit
 
     def __repr__(self):
-        return  "(Item: %d, Profit:%d, Weight:%d)" %(self._index, self._profit, self._weight)
+        return "(Item: %d, Profit:%d, Weight:%d)" % (self._index, self._profit, self._weight)

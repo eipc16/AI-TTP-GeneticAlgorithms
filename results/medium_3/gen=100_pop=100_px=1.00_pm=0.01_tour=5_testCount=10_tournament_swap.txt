@@ -1,0 +1,6 @@
+Średnia fitnessu najlepszych: 125386.516713
+Odchylenie standardowe dla najlepszych: 5448.889566
+Średnia fitnessu w populacji: 122885.155277
+Odchylenie standardowe dla najlepszych: 6755.112826
+Sreðnia fitnessu najgorszych: 115510.399792
+Odchylenie standardowe dla najlepszych: 6605.900222
