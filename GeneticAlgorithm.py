@@ -53,6 +53,18 @@ class GeneticAlgorithm:
 
             gen = gen + 1
 
+        # best = self.select_best(self.population)
+        # best_route = best.route
+
+        # x = [c.get_x_pos() for c in best_route]
+        # y = [c.get_y_pos() for c in best_route]
+
+        # plt.plot(x, y)
+        # plt.plot(x[0], y[0], marker="v", label='START')
+        # plt.plot(x[-1], y[-1], marker="o", label='STOP')
+        # plt.legend(loc='upper right')
+        # plt.show()
+        
         return self.bests, self.avgs, self.worsts
 
     def evaluate(self):

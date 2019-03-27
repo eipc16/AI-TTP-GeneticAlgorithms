@@ -1,5 +1,5 @@
 import math
-
+import random as r
 
 class City:
     def __init__(self, index, x_pos, y_pos):

@@ -24,8 +24,11 @@ def run_tests(tests_array):
         time = [i for i in range(test['generations'] + 1)]
 
         bests, avgs, worsts = run_algorithm(ga, test['testCount'])
-        #save_plot(time, bests, avgs, worsts, save_path, test['testCount'])
-        #save_text_data(bests, avgs, worsts, save_path)
+        print('BEST: ' + str(np.mean(bests[-1])))
+        print('AVGS: ' + str(np.mean(avgs[-1])))
+        print('WORSTS: ' + str(np.mean(worsts[-1])))
+        save_plot(time, bests, avgs, worsts, save_path, test['testCount'])
+        save_text_data(bests, avgs, worsts, save_path)
 
 
 def run_algorithm(ga, testCount):
@@ -81,9 +84,9 @@ tests = [
     # {"pop_size": 100, "generations": 1000, "px": 0.75, "pm": 0.01,
     #  "tour": 5, "test_name": "medium_3", "selection_type": "tournament",
     #  "mutation_type": "swap", "testCount": 10},
-    {"pop_size": 100, "generations": 100, "px": 0.75, "pm": 0.01,
-     "tour": 5, "test_name": "medium_3", "selection_type": "tournament",
-     "mutation_type": "swap", "testCount": 1},
+    # {"pop_size": 100, "generations": 100, "px": 0.75, "pm": 0.01,
+    #  "tour": 5, "test_name": "medium_3", "selection_type": "tournament",
+    #  "mutation_type": "swap", "testCount": 1},
     # #end of selection method tests
     # {"pop_size": 20, "generations": 100, "px": 0.75, "pm": 0.01,
     #  "tour": 5, "test_name": "medium_3", "selection_type": "tournament",
@@ -184,9 +187,9 @@ tests = [
     # {"pop_size": 100, "generations": 500, "px": 0.75, "pm": 0.01,
     #  "tour": 5, "test_name": "hard_2", "selection_type": "tournament",
     #  "mutation_type": "swap", "testCount": 10},
-    # {"pop_size": 100, "generations": 500, "px": 0.75, "pm": 0.01,
-    #  "tour": 5, "test_name": "hard_3", "selection_type": "tournament",
-    #  "mutation_type": "swap", "testCount": 10},
+    {"pop_size": 100, "generations": 300, "px": 0.75, "pm": 0.01,
+     "tour": 3, "test_name": "hard_3", "selection_type": "tournament",
+     "mutation_type": "swap", "testCount": 2},
     # {"pop_size": 100, "generations": 500, "px": 0.75, "pm": 0.01,
     #  "tour": 5, "test_name": "hard_4", "selection_type": "tournament",
     #  "mutation_type": "swap", "testCount": 10},
@@ -196,5 +199,5 @@ tests = [
     # end of hard tests
 ]
 
-if __name__ == '__main__':
-    run_tests(tests)
+run_tests(tests)
+#

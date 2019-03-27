@@ -1,23 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="83176893-02e8-4c22-92f4-471194021094" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/City.py" beforeDir="false" afterPath="$PROJECT_DIR$/City.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GeneticAlgorithm.py" beforeDir="false" afterPath="$PROJECT_DIR$/GeneticAlgorithm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Individual.py" beforeDir="false" afterPath="$PROJECT_DIR$/Individual.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Item.py" beforeDir="false" afterPath="$PROJECT_DIR$/Item.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Loader.py" beforeDir="false" afterPath="$PROJECT_DIR$/Loader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TTP.py" beforeDir="false" afterPath="$PROJECT_DIR$/TTP.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/results/easy_0.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/results/hard_0.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/results/hard_4.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/results/last_best_route.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/results/medium_0.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/results/medium_3.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/results/trivial_0.csv" beforeDir="false" />
-    </list>
+    <list default="true" id="83176893-02e8-4c22-92f4-471194021094" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,7 +34,7 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="216">
@@ -60,6 +44,11 @@
               </folding>
             </state>
           </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="mock:///home/przemek/.PyCharm2018.3/system/snapshots/SI5.pstat">
+          <provider selected="true" editor-type-id="profiler-session-editor" />
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
@@ -100,7 +89,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="260" />
     <option name="y" value="58" />
     <option name="width" value="1400" />
@@ -206,19 +195,18 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1553617537341</updated>
-      <workItem from="1553617538662" duration="985000" />
+      <workItem from="1553617538662" duration="1313000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="985000" />
+    <option name="totallyTimeSpent" value="1313000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-2" y="37" width="1924" height="1045" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="Favorites" side_tool="true" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.17967914" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.103743315" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" />
@@ -230,7 +218,7 @@
       <window_info anchor="bottom" id="Concurrent Activities Diagram" weight="0.32930845" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32930845" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.09330406" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
